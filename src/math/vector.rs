@@ -33,4 +33,66 @@ where
     pub fn len(&self) -> T {
         ((self.x * self.x) + (self.y * self.y) + (self.z * self.z)).sqrt()
     }
+
+    pub fn dot(&self, other: &Self) -> T {
+        (self.x * other.x) + (self.y * other.y) + (self.z * other.z)
+    }
+
+    pub fn scaled(&self, scalar: T) -> Self {
+        Self {
+            x: self.x * scalar,
+            y: self.y * scalar,
+            z: self.z * scalar,
+        }
+    }
+
+    pub fn scale(&mut self, scalar: T) {
+        self.x = self.x * scalar;
+        self.y = self.y * scalar;
+        self.z = self.z * scalar;
+    }
+
+    pub fn added(&self, other: &Self) -> Self {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
+    }
+
+    pub fn add(&mut self, other: &Self) {
+        self.x = self.x + other.x;
+        self.y = self.y + other.y;
+        self.z = self.z + other.z;
+    }
+
+    pub fn subtracted(&self, other: &Self) -> Self {
+        Self {
+            x: self.x - other.x,
+            y: self.y - other.y,
+            z: self.z - other.z,
+        }
+    }
+
+    pub fn subtract(&mut self, other: &Self) {
+        self.x = self.x - other.x;
+        self.y = self.y - other.y;
+        self.z = self.z - other.z;
+    }
+
+    pub fn normalized(&self) -> Self {
+        let leng: T = self.len();
+        Self {
+            x: self.x / leng,
+            y: self.y / leng,
+            z: self.z / leng,
+        } 
+    }
+
+    pub fn normalize(&mut self) {
+        let leng: T = self.len();
+        self.x = self.x / leng;
+        self.y = self.y / leng;
+        self.z = self.z / leng;
+    }
 }
