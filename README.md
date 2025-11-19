@@ -1,5 +1,4 @@
 * luo abstraktit vektori- ja matriisikirjastot
-* luo testiskriptit ja testifunktionaalisuus
 * luo objekti ja siihen liittyvät tyyppimääritteet
 * luo skene ja siihen liittyvät tyyppimääritteet
 * luo raytracingiin liittyvät tyyppimääritteet (ei vielä kimmotuksia ehkä)
