@@ -1,5 +1,6 @@
 
 use raytrace::math::vector::Vector3;
+use raytrace::terminal;
 
 fn main() {
     println!("Test computing a vector magnitude!");
@@ -14,4 +15,9 @@ fn main() {
     let length2 = vec1.len();
     println!("normalized: {:?}", vec1);
     println!("The length: {}", length2);
+
+
+    println!();
+
+    terminal::test();
 }
