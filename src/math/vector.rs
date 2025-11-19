@@ -16,13 +16,28 @@ pub struct Vector3<T>
 }
 
 
-impl<T> Vector3<T> {
+impl<T> Vector3<T>
+where
+    T: Copy + Clone
+{
     pub fn new(x: T, y: T, z: T) -> Self {
         Self {
             x,
             y,
             z,
         }
+    }
+
+    pub fn new_from_arr(elems: [T; 3]) -> Self {
+        Self {
+            x: elems[0],
+            y: elems[1],
+            z: elems[2],
+        }
+    }
+
+    pub fn elems(&self) -> [T; 3] {
+        [self.x, self.y, self.z]
     }
 }
 
