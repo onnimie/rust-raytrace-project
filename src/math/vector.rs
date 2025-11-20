@@ -10,9 +10,9 @@ impl Sqrtable for f64 { fn sqrt(self) -> Self { f64::sqrt(self) } }
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vector3<T>
 {
-    x: T,
-    y: T,
-    z: T,
+    pub x: T,
+    pub y: T,
+    pub z: T,
 }
 
 

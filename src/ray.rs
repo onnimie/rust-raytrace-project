@@ -2,15 +2,25 @@ use crate::math::vector::Vector3;
 use crate::scene::Scene;
 
 pub struct Ray {
-    origin: Vector3<f64>,
-    dir: Vector3<f64>,
+    pub origin: Vector3<f64>,
+    pub dir: Vector3<f64>,
 }
 
 
 pub struct RayHit {
-    t: f64,
-    pos: Vector3<f64>,
-    material: String,
+    pub t: f64,
+    pub pos: Vector3<f64>,
+    pub material: String,
+}
+
+impl RayHit {
+    pub fn new(t: f64, pos: Vector3<f64>, material: String) -> Self {
+        Self {
+            t,
+            pos,
+            material,
+        }
+    }
 }
 
 

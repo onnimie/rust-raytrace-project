@@ -7,6 +7,14 @@ pub trait Updatable {
 
 
 pub struct Scene {
-    objects: Vec<Object>,
-    active: bool,
+    pub objects: Vec<Object>,
+    pub active: bool,
+}
+
+
+
+impl Scene {
+    fn update(&self, dt: f64) -> () {}
+
+
 }
