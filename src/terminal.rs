@@ -81,7 +81,7 @@ impl TerminalScreen {
                 self.output.write_all(&row_buf)?;
                 self.output.write_all(b"\x1B[1E\x1B[1C")?;
             }
-            self.output.write_all(b"\x1B[47;0H")?;
+            self.output.write_all(format!("\x1B[{};0H", self.h+2).as_bytes())?;
             self.output.flush()
     }
 
