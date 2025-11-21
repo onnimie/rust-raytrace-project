@@ -41,6 +41,32 @@ where
     }
 }
 
+impl Vector3<f64> {
+    pub fn UnitY() -> Self {
+        Self {
+            x: 0.0,
+            y: 1.0,
+            z: 0.0,
+        }
+    }
+
+    pub fn UnitX() -> Self {
+        Self {
+            x: 1.0,
+            y: 0.0,
+            z: 0.0,
+        }
+    }
+
+    pub fn UnitZ() -> Self {
+        Self {
+            x: 0.0,
+            y: 0.0,
+            z: 1.0,
+        }
+    }
+}
+
 impl<T> Vector3<T>
 where
     T: Add<T, Output = T> + Sub<T, Output = T> + Mul<T, Output = T> + Div<T, Output = T> + Debug + Copy + Clone + Sqrtable,

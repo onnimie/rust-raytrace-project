@@ -15,7 +15,9 @@ pub struct Camera {
 
 // Assume camera screen has coordinates in [-1,1]^2,
 pub fn map_terminal_pixel_pos_to_screen_coord(pixelpos: (u64,u64), w: u64, h: u64) -> (f64,f64) {
-    return (0.0,0.0);
+    let x: f64 = ((pixelpos.0 as f64) / (w as f64) * 2_f64) - 1_f64;
+    let y: f64 = (((h as f64)-(pixelpos.1 as f64)) / (h as f64) * 2_f64) - 1_f64;
+    (x,y)
 }
 
 impl Camera {
@@ -57,6 +59,12 @@ impl Camera {
         let raydir: Vector3<f64> = ray_end_point_on_screen.subtracted(&self.eyepoint).normalized();
 
         let ray: Ray = Ray::new(self.eyepoint, raydir, self.tmin);
+
+        //if screen_pos == (0.0, 0.0) {
+        //    println!("{:?}", screen_pos);
+        //    dbg!(&ray);
+        //}
+        
         ray
     }
 }

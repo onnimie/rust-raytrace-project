@@ -14,11 +14,11 @@ pub struct Scene {
 
 
 impl Scene {
-    fn update(&self, dt: f64) -> () {}
+    fn _update(&self, dt: f64) -> () {}
 
-    fn test_scene() -> Self {
+    pub fn test_scene() -> Self {
 
-        let test_ball: Object = Object::test_ball(10.0, Vector3::new(0.0, 0.0, 0.0));
+        let test_ball: Object = Object::test_ball(100.0, Vector3::new(0.0, 0.0, 0.0));
 
         let test_scene: Scene = Scene {
             objects: vec![test_ball],

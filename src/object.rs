@@ -2,13 +2,13 @@ use crate::math::vector::Vector3;
 use crate::math::matrix::Matrix4x4;
 use crate::raytracing::{Ray, RayHit};
 
-#[derive(PartialEq)]
+#[derive(Debug, PartialEq)]
 pub enum Shape {
     Ball,
     Cube,
 }
 
-
+#[derive(Debug)]
 pub struct Object {
     name: String,
     shape: Shape,
@@ -55,16 +55,21 @@ impl Object {
             let dk: f64 = ray.dir.z;
             let r: f64 = self.size;
 
-            let f: f64 = di.sqrt() + dj.sqrt() + dk.sqrt();
+            let f: f64 = di*di + dj*dj + dk*dk;
             let g: f64 = 2_f64 * (a*di + b*dj + c*dk);
-            let h: f64 = a.sqrt() + b.sqrt() + c.sqrt() - r.sqrt();
+            let h: f64 = a*a + b*b + c*c - r*r;
             */
+            
             let k: Vector3<f64> = ray.origin.subtracted(&self.pos);
             let f: f64 = ray.dir.dot(&ray.dir);
             let g: f64 = 2_f64 * (k.dot(&ray.dir));
-            let h: f64 = k.dot(&k) - self.size.sqrt();
+            let h: f64 = k.dot(&k) - (self.size * self.size);
 
-            let discriminant: f64 = g.sqrt() - 4_f64*f*h;
+            let discriminant: f64 = g*g - 4_f64*f*h;
+
+            //if ray.dir == Vector3::UnitX() {
+            //    dbg!(discriminant);
+            //}
             
             // if discr < 0, there are no solutions and the ray does not intersect
             if discriminant < 0.0 {
@@ -76,23 +81,21 @@ impl Object {
             let p1: Vector3<f64> = ray.origin.added(&ray.dir.scaled(t1));
             let p2: Vector3<f64> = ray.origin.added(&ray.dir.scaled(t2));
 
-            if t1 <= 0.0 && t2 <= 0.0 { return None }
-            if t1 <= 0.0 {
+            //if ray.dir == Vector3::UnitX() {
+            //    dbg!(t1);
+            //    dbg!(t2);
+            //}
+
+            if t1 <= ray.tmin && t2 <= ray.tmin { return None }
+            if t2 > ray.tmin && (t2 <= t1 || t1 <= ray.tmin) {
                 let rayhit: RayHit = RayHit::new(t2, p2, String::from("red"));
                 return Some(rayhit);
             }
-            if t2 <= 0.0 {
+            if t1 > ray.tmin && (t1 <= t2 || t2 <= ray.tmin) {
                 let rayhit: RayHit = RayHit::new(t1, p1, String::from("red"));
                 return Some(rayhit);
             }
-            // both are positive
-            if t2 < t1 {
-                let rayhit: RayHit = RayHit::new(t1, p1, String::from("red"));
-                return Some(rayhit);
-            } else {
-                let rayhit: RayHit = RayHit::new(t2, p2, String::from("red"));
-                return Some(rayhit);
-            }
+            return None
         }
 
         None
