@@ -1,6 +1,6 @@
 use crate::math::vector::Vector3;
 use crate::math::matrix::Matrix4x4;
-use crate::ray::{Ray, RayHit};
+use crate::raytracing::{Ray, RayHit};
 
 #[derive(PartialEq)]
 pub enum Shape {
@@ -46,6 +46,7 @@ impl Object {
             // solve for t for intersections: t^2(di^2+dj^2+dk^2) + 2t(adi+bdj+cdk) + (a^2+b^2+c^2) - R^2 = 0
             // simpler: f*t^2 + g*t + h = 0
             
+            /*
             let a: f64 = ray.origin.x - self.pos.x;
             let b: f64 = ray.origin.y - self.pos.y;
             let c: f64 = ray.origin.z - self.pos.z;
@@ -57,6 +58,11 @@ impl Object {
             let f: f64 = di.sqrt() + dj.sqrt() + dk.sqrt();
             let g: f64 = 2_f64 * (a*di + b*dj + c*dk);
             let h: f64 = a.sqrt() + b.sqrt() + c.sqrt() - r.sqrt();
+            */
+            let k: Vector3<f64> = ray.origin.subtracted(&self.pos);
+            let f: f64 = ray.dir.dot(&ray.dir);
+            let g: f64 = 2_f64 * (k.dot(&ray.dir));
+            let h: f64 = k.dot(&k) - self.size.sqrt();
 
             let discriminant: f64 = g.sqrt() - 4_f64*f*h;
             

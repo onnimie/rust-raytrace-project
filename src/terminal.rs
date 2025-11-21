@@ -42,12 +42,34 @@ fn init_screen_area(stdout: &mut Stdout) -> Result<()> {
     let hbuf: &[u8] = hst.as_bytes();
 
     stdout.write_all(wbuf)?;
-    stdout.write(b"\n")?;
+    stdout.write_all(b"\n")?;
     for _i in 0..H {
         stdout.write_all(hbuf)?;
-        stdout.write(b"\n")?;
+        stdout.write_all(b"\n")?;
     }
 
     stdout.write_all(wbuf)?;
+    stdout.flush()
+}
+
+
+fn render_screen_area(stdout: &mut Stdout, w: u64, h: u64) -> Result<()> {
+
+    stdout.write_all(b"\x1B[1;1H")?;
+
+
+    // go through all rows (h rows)
+    //      init row buffer (charactes to draw on the row)
+    //      for each pixel in a row (w pixels in a row)
+    //          generate a ray for the pixel
+    //          trace the ray, and find the RayHit
+    //          decide what to draw based on RayHit
+    //          push that character to the row buffer
+    //      write the row to stdout, and move to the next row
+
+    for _i in 0..h {
+        let row_buf: Vec<u8> = Vec::new();
+    }
+
     stdout.flush()
 }
