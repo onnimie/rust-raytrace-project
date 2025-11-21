@@ -1,8 +1,8 @@
-use std::io::{self, Result, Write, Stdout};
-use std::thread;
-use std::time::Duration;
+use std::io::{Result, Write, Stdout};
+//use std::thread;
+//use std::time::Duration;
 
-use crate::camera::{self, Camera};
+use crate::camera::Camera;
 use crate::raytracing;
 use crate::scene::Scene;
 
@@ -27,9 +27,6 @@ impl TerminalScreen {
     pub fn init_screen_area(&mut self) -> Result<()> {
         self.output.write_all(b"\x1B[2J\x1B[H")?;
 
-        const W: usize = 202;
-        const H: usize = 46;
-
         //let wst: String = String::from_iter(['='; W].iter());
         let wst: String = "=".repeat(self.w as usize);
         let wbuf: &[u8] = wst.as_bytes();
@@ -40,7 +37,7 @@ impl TerminalScreen {
 
         self.output.write_all(wbuf)?;
         self.output.write_all(b"\n")?;
-        for _i in 0..H {
+        for _i in 0..self.h {
             self.output.write_all(hbuf)?;
             self.output.write_all(b"\n")?;
         }
@@ -91,7 +88,7 @@ impl TerminalScreen {
 }
 
 // ([0..w],[0..h]) to (-1,1)^2
-pub fn map_terminal_pos_to_normalized_screen_coord(pixelpos: (u64,u64), w: u64, h: u64) -> (f64,f64) {
+fn map_terminal_pos_to_normalized_screen_coord(pixelpos: (u64,u64), w: u64, h: u64) -> (f64,f64) {
     let x: f64 = ((pixelpos.0 as f64) / (w as f64) * 2_f64) - 1_f64;
     let y: f64 = (((h as f64)-(pixelpos.1 as f64)) / (h as f64) * 2_f64) - 1_f64;
     (x,y)

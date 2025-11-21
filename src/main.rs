@@ -1,12 +1,12 @@
-use std::io::{self, Stdout};
+use std::io::{self};//, Stdout};
 use std::f64::consts::PI;
 use std::thread;
 use std::time::Duration;
 
-use raytrace::camera::{self, Camera};
+use raytrace::camera::Camera;
 use raytrace::math::vector::Vector3;
 use raytrace::scene::Scene;
-use raytrace::terminal::{self, TerminalScreen};
+use raytrace::terminal::TerminalScreen;
 
 fn main() {
     println!("Test computing a vector magnitude!");
@@ -28,9 +28,9 @@ fn main() {
 
     let mut camera: Camera = 
         Camera::new(Vector3::new(-400.0, 0.0, 0.0),
-            Vector3::UnitX(),
-            Vector3::UnitY(),
-            Vector3::UnitZ(),
+            Vector3::unit_x(),
+            Vector3::unit_y(),
+            Vector3::unit_z(),
             0.001,
             PI/4.0);
     

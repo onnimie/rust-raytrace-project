@@ -14,7 +14,7 @@ pub struct Scene {
 
 
 impl Scene {
-    fn _update(&self, dt: f64) -> () {}
+    fn _update(&self, _dt: f64) -> () {}
 
     pub fn test_scene() -> Self {
 

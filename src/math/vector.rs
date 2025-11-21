@@ -42,7 +42,7 @@ where
 }
 
 impl Vector3<f64> {
-    pub fn UnitY() -> Self {
+    pub fn unit_y() -> Self {
         Self {
             x: 0.0,
             y: 1.0,
@@ -50,7 +50,7 @@ impl Vector3<f64> {
         }
     }
 
-    pub fn UnitX() -> Self {
+    pub fn unit_x() -> Self {
         Self {
             x: 1.0,
             y: 0.0,
@@ -58,7 +58,7 @@ impl Vector3<f64> {
         }
     }
 
-    pub fn UnitZ() -> Self {
+    pub fn unit_z() -> Self {
         Self {
             x: 0.0,
             y: 0.0,

@@ -1,5 +1,3 @@
-use std::os::windows::io::HandleOrInvalid;
-
 use crate::math::matrix::Matrix4x4;
 use crate::math::vector::Vector3;
 use crate::raytracing::Ray;
@@ -43,7 +41,7 @@ impl Camera {
 
     pub fn create_ray_for_screenpos(&self, screen_pos: (f64,f64), aspect_ratio: f64) -> Ray {
         // screen pos is in [-1, 1]^2
-        
+
         let distance_to_screen_origo: f64 = 1.0/((self.fov_vertical/2.0).tan());
         let screen_origo: Vector3<f64> = self.eyepoint.added(&self.dir.scaled(distance_to_screen_origo));
 

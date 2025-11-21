@@ -10,31 +10,31 @@ pub enum Shape {
 
 #[derive(Debug)]
 pub struct Object {
-    name: String,
+    _name: String,
     shape: Shape,
     size: f64,
     pos: Vector3<f64>,
-    velocity: Vector3<f64>,
-    acceleration: Vector3<f64>,
-    rotation: Matrix4x4,
-    rot_velocity: Vector3<f64>,
-    rot_acceleration: Vector3<f64>,
-    mass: f64,
+    _velocity: Vector3<f64>,
+    _acceleration: Vector3<f64>,
+    _rotation: Matrix4x4,
+    _rot_velocity: Vector3<f64>,
+    _rot_acceleration: Vector3<f64>,
+    _mass: f64,
 }
 
 impl Object {
-    pub fn test_ball(size: f64, velocity: Vector3<f64>) -> Object {
+    pub fn test_ball(size: f64, _velocity: Vector3<f64>) -> Object {
         Object {
-            name: String::from("testipallo"),
+            _name: String::from("testipallo"),
             shape: Shape::Ball,
             size,
             pos: Vector3::new(0.0, 0.0, 0.0),
-            velocity, 
-            acceleration: Vector3::new(0.0, 0.0, 0.0),
-            rotation: Matrix4x4::zeroes(),
-            rot_velocity: Vector3::new(0.0, 0.0, 0.0),
-            rot_acceleration: Vector3::new(0.0, 0.0, 0.0),
-            mass: 1.0,
+            _velocity, 
+            _acceleration: Vector3::new(0.0, 0.0, 0.0),
+            _rotation: Matrix4x4::zeroes(),
+            _rot_velocity: Vector3::new(0.0, 0.0, 0.0),
+            _rot_acceleration: Vector3::new(0.0, 0.0, 0.0),
+            _mass: 1.0,
         }
     }
 
