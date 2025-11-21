@@ -13,13 +13,6 @@ pub struct Camera {
     fov_vertical: f64,
 }
 
-// Assume camera screen has coordinates in [-1,1]^2,
-pub fn map_terminal_pixel_pos_to_screen_coord(pixelpos: (u64,u64), w: u64, h: u64) -> (f64,f64) {
-    let x: f64 = ((pixelpos.0 as f64) / (w as f64) * 2_f64) - 1_f64;
-    let y: f64 = (((h as f64)-(pixelpos.1 as f64)) / (h as f64) * 2_f64) - 1_f64;
-    (x,y)
-}
-
 impl Camera {
     pub fn new(eyepoint: Vector3<f64>,
         dir: Vector3<f64>,
@@ -49,7 +42,8 @@ impl Camera {
     }
 
     pub fn create_ray_for_screenpos(&self, screen_pos: (f64,f64), aspect_ratio: f64) -> Ray {
-
+        // screen pos is in [-1, 1]^2
+        
         let distance_to_screen_origo: f64 = 1.0/((self.fov_vertical/2.0).tan());
         let screen_origo: Vector3<f64> = self.eyepoint.added(&self.dir.scaled(distance_to_screen_origo));
 
