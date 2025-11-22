@@ -1,5 +1,6 @@
 use crate::math::vector::Vector3;
 use crate::scene::Scene;
+use crate::phong::{self, Material};
 
 #[derive(Debug)]
 pub struct Ray {
@@ -18,21 +19,25 @@ impl Ray {
     }
 
 
-    pub fn trace(&self, scene: &Scene) -> Option<RayHit> {
+    pub fn trace(&self, scene: &Scene) -> Option<Vector3<f64>> {
 
         // find objects from the scene reference
         // compute objects' intersections with the given ray
         // find the nearest intersection (minimal t)
-        // create a corresponding RayHit and return it (None if no intersections)
+        // create a corresponding RayHit
+        // compute the lighting on the hit, and return the color (illumination)
         
         let test_ball = scene.objects.first().unwrap();
-        let ret = test_ball.intersect(self);
+        let rayhit = test_ball.intersect(self);
 
         //if self.dir == Vector3::UnitX() {
             //dbg!(&test_ball);
             //dbg!(&ret);
         //}
-        ret
+        match rayhit {
+            Some(hit) => Some(phong::compute_phong_illumination(&hit, &self, scene)),
+            None => None
+        }
     }
 }
 
@@ -40,14 +45,16 @@ impl Ray {
 pub struct RayHit {
     pub t: f64,
     pub pos: Vector3<f64>,
-    pub material: String,
+    pub normal: Vector3<f64>,
+    pub material: Material,
 }
 
 impl RayHit {
-    pub fn new(t: f64, pos: Vector3<f64>, material: String) -> Self {
+    pub fn new(t: f64, pos: Vector3<f64>, normal: Vector3<f64>, material: Material) -> Self {
         Self {
             t,
             pos,
+            normal,
             material,
         }
     }

@@ -3,6 +3,7 @@ use std::io::{Result, Write, Stdout};
 //use std::time::Duration;
 
 use crate::camera::Camera;
+use crate::math::vector::Vector3;
 use crate::raytracing;
 use crate::scene::Scene;
 
@@ -71,10 +72,13 @@ impl TerminalScreen {
                     let normalized_screen_coord: (f64, f64) = map_terminal_pos_to_normalized_screen_coord((i,j), self.w, self.h);
 
                     let ray: raytracing::Ray = camera.create_ray_for_screenpos(normalized_screen_coord, true_aspect_ratio);
-                    let rayhit_option: Option<raytracing::RayHit> = ray.trace(scene);
+                    let color_hit: Option<Vector3<f64>> = ray.trace(scene);
 
-                    match rayhit_option {
-                        Some(_hit) => row_buf.write_all(b"o")?,
+                    match color_hit {
+                        Some(color) => {
+                            let buf = map_color_to_terminal_character(color);
+                            row_buf.write_all(&buf)?
+                        },
                         None => row_buf.write_all(b".")?,
                     };
                 }
@@ -94,18 +98,19 @@ fn map_terminal_pos_to_normalized_screen_coord(pixelpos: (u64,u64), w: u64, h: u
     (x,y)
 }
 
-/*
-fn clear_screen() -> Result<()> {
-    let mut stdout: Stdout = io::stdout();
+const CHARS: &str = ".-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@@@";
+fn map_color_to_terminal_character(color: Vector3<f64>) -> [u8; 1] {
+    //.-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@
+    // 90 chars
+    let n: usize = CHARS.len();
 
-    thread::sleep(Duration::from_secs(2));
+    let gray: f64 = 0.2126*color.x + 0.7152*color.y + 0.00722*color.z;
 
-    stdout.write_all(b"\x1B[H").unwrap();
-    stdout.write_all(b"\x1B[2J").unwrap();
+    if gray > 1.0 {
+        dbg!(gray);
+    }
 
-    stdout.flush().unwrap();
+    let i: usize = ((gray * (n as f64)).floor()) as usize;
 
-
-    Ok(())
+    [CHARS.as_bytes()[i]]
 }
-*/

@@ -65,6 +65,14 @@ impl Vector3<f64> {
             z: 1.0,
         }
     }
+
+    pub fn fill(val: f64) -> Self {
+        Self {
+            x: val,
+            y: val,
+            z: val,
+        }
+    }
 }
 
 impl<T> Vector3<T>
@@ -135,5 +143,13 @@ where
         self.x = self.x / leng;
         self.y = self.y / leng;
         self.z = self.z / leng;
+    }
+
+    pub fn componentwise_prod(&self, other: &Self) -> Self {
+        Self {
+            x: self.x * other.x,
+            y: self.y * other.y,
+            z: self.z * other.z,
+        }
     }
 }

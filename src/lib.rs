@@ -4,3 +4,4 @@ pub mod scene;
 pub mod object;
 pub mod raytracing;
 pub mod camera;
+pub mod phong;

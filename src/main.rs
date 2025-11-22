@@ -11,14 +11,14 @@ use raytrace::terminal::TerminalScreen;
 fn main() {
 
     let mut camera: Camera = 
-        Camera::new(Vector3::new(-400.0, 0.0, 0.0),
+        Camera::new(Vector3::new(-220.0, 0.0, 0.0),
             Vector3::unit_x(),
             Vector3::unit_y(),
             Vector3::unit_z(),
             0.001,
             PI/4.0);
     
-    let scene: Scene = Scene::test_scene();
+    let mut scene: Scene = Scene::test_scene();
 
     let mut terminal_screen: TerminalScreen = TerminalScreen::new(
         io::stdout(),
@@ -29,12 +29,13 @@ fn main() {
 
     terminal_screen.init_screen_area().unwrap();
     println!("\n");
-    
+
     loop {
         terminal_screen.render_scene_to_screen_area(&scene, &camera).unwrap();
-        camera.move_by(&Vector3::new(20.0, 0.0, 0.0));
+        scene.point_lights[0].move_by(&Vector3::new(0.0, 10.0, 0.0));
+        camera.move_by(&Vector3::new(-0.8, 0.0, 0.0));
         println!("camera pos: {:?}", camera.eyepoint);
-        thread::sleep(Duration::from_millis(500));
+        thread::sleep(Duration::from_millis(200));
     }
     
 }

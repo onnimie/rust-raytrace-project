@@ -1,5 +1,6 @@
 use crate::math::vector::Vector3;
 use crate::math::matrix::Matrix4x4;
+use crate::phong::Material;
 use crate::raytracing::{Ray, RayHit};
 
 #[derive(Debug, PartialEq)]
@@ -80,6 +81,8 @@ impl Object {
             let t2: f64 = (-g - discriminant.sqrt()) / (2_f64*f);
             let p1: Vector3<f64> = ray.origin.added(&ray.dir.scaled(t1));
             let p2: Vector3<f64> = ray.origin.added(&ray.dir.scaled(t2));
+            let n1: Vector3<f64> = p1.subtracted(&self.pos).normalized();
+            let n2: Vector3<f64> = p2.subtracted(&self.pos).normalized();
 
             //if ray.dir == Vector3::UnitX() {
             //    dbg!(t1);
@@ -88,11 +91,11 @@ impl Object {
 
             if t1 <= ray.tmin && t2 <= ray.tmin { return None }
             if t2 > ray.tmin && (t2 <= t1 || t1 <= ray.tmin) {
-                let rayhit: RayHit = RayHit::new(t2, p2, String::from("red"));
+                let rayhit: RayHit = RayHit::new(t2, p2, n2, Material::test_material());
                 return Some(rayhit);
             }
             if t1 > ray.tmin && (t1 <= t2 || t2 <= ray.tmin) {
-                let rayhit: RayHit = RayHit::new(t1, p1, String::from("red"));
+                let rayhit: RayHit = RayHit::new(t1, p1, n1, Material::test_material());
                 return Some(rayhit);
             }
             return None
