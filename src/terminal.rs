@@ -26,7 +26,7 @@ impl TerminalScreen {
     }
 
     pub fn init_screen_area(&mut self) -> Result<()> {
-        self.output.write_all(b"\x1B[2J\x1B[H")?;
+        self.output.write_all(b"\x1B[?25l\x1B[2J\x1B[H")?;
 
         //let wst: String = String::from_iter(['='; W].iter());
         let wst: String = "=".repeat(self.w as usize);
@@ -44,6 +44,7 @@ impl TerminalScreen {
         }
 
         self.output.write_all(wbuf)?;
+        self.output.write_all(b"\x1B[?25h")?;
         self.output.flush()
     }
 
@@ -52,7 +53,7 @@ impl TerminalScreen {
         scene: &Scene,
         camera: &Camera) -> Result<()> {
 
-            self.output.write_all(b"\x1B[2;2H")?;
+            self.output.write_all(b"\x1B[?25l\x1B[2;2H")?;
 
             let width_height_aspect_ratio: f64 = (self.w as f64)/(self.h as f64);
             let true_aspect_ratio: f64 = width_height_aspect_ratio * self.line_to_monospace_aspect_ratio;
@@ -85,7 +86,7 @@ impl TerminalScreen {
                 self.output.write_all(&row_buf)?;
                 self.output.write_all(b"\x1B[1E\x1B[1C")?;
             }
-            self.output.write_all(format!("\x1B[{};0H", self.h+2).as_bytes())?;
+            self.output.write_all(format!("\x1B[{};0H\x1B[?25h", self.h+2).as_bytes())?;
             self.output.flush()
     }
 
