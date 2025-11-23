@@ -26,9 +26,23 @@ impl Ray {
         // find the nearest intersection (minimal t)
         // create a corresponding RayHit
         // compute the lighting on the hit, and return the color (illumination)
+        let mut rayhit: Option<RayHit> = None;
         
-        let test_ball = scene.objects.first().unwrap();
-        let rayhit = test_ball.intersect(self);
+        //let test_ball = scene.objects.first().unwrap();
+        for obj in &scene.objects {
+            //let newhit: Option<RayHit> = ;
+            match obj.intersect(self) {
+                Some(new_hit) => match &rayhit {
+                    Some(old_hit) => if new_hit.t < old_hit.t {
+                        rayhit = Some(new_hit);
+                    },
+                    None => rayhit = Some(new_hit)
+                },
+                None => ()
+            };
+        }
+
+        //rayhit = test_ball.intersect(self);
 
         //if self.dir == Vector3::UnitX() {
             //dbg!(&test_ball);

@@ -24,13 +24,13 @@ pub struct Object {
 }
 
 impl Object {
-    pub fn test_ball(size: f64, _velocity: Vector3<f64>) -> Object {
+    pub fn test_ball(size: f64, pos: Vector3<f64>) -> Object {
         Object {
             _name: String::from("testipallo"),
             shape: Shape::Ball,
             size,
-            pos: Vector3::new(0.0, 0.0, 0.0),
-            _velocity, 
+            pos,
+            _velocity: Vector3::new(0.0, 0.0, 0.0), 
             _acceleration: Vector3::new(0.0, 0.0, 0.0),
             _rotation: Matrix4x4::zeroes(),
             _rot_velocity: Vector3::new(0.0, 0.0, 0.0),
@@ -102,5 +102,13 @@ impl Object {
         }
 
         None
+    }
+
+    pub fn move_to_pos(&mut self, new_pos: Vector3<f64>) {
+        self.pos = new_pos;
+    }
+
+    pub fn move_by(&mut self, deltas: &Vector3<f64>) {
+        self.pos.add(&deltas);
     }
 }

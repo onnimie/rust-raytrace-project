@@ -22,7 +22,9 @@ impl Scene {
 
     pub fn test_scene() -> Self {
 
-        let test_ball: Object = Object::test_ball(100.0, Vector3::new(0.0, 0.0, 0.0));
+        let test_ball1: Object = Object::test_ball(100.0, Vector3::new(0.0, 0.0, 0.0));
+        let test_ball2: Object = Object::test_ball(30.0, Vector3::new(-110.0, 40.0, 0.0));
+
         let test_directional_light: DirectionalLight =
             DirectionalLight::new(
                 Vector3::unit_y(),
@@ -38,7 +40,7 @@ impl Scene {
             );
 
         let test_scene: Scene = Scene {
-            objects: vec![test_ball],
+            objects: vec![test_ball2, test_ball1],
             ambient_light_intensity: Vector3::new(0.0, 0.0, 0.0),
             directional_lights: vec![test_directional_light],
             point_lights: vec![test_point_light],
