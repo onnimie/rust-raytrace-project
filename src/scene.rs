@@ -31,10 +31,10 @@ impl Scene {
         let test_point_light = 
             PointLight::new(
                 Vector3::new(-100.0, -300.0, 80.0),
-                Vector3::fill(10.0),
+                Vector3::fill(100.0),
                 0.0,
                 0.005,
-                0.0,                                
+                0.005,                                
             );
 
         let test_scene: Scene = Scene {

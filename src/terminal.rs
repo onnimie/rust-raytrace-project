@@ -79,7 +79,7 @@ impl TerminalScreen {
                             let buf = map_color_to_terminal_character(color);
                             row_buf.write_all(&buf)?
                         },
-                        None => row_buf.write_all(b".")?,
+                        None => row_buf.write_all(b" ")?, //background color
                     };
                 }
                 self.output.write_all(&row_buf)?;
@@ -98,7 +98,7 @@ fn map_terminal_pos_to_normalized_screen_coord(pixelpos: (u64,u64), w: u64, h: u
     (x,y)
 }
 
-const CHARS: &str = ".-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@@@";
+const CHARS: &str = " .-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@@@";
 fn map_color_to_terminal_character(color: Vector3<f64>) -> [u8; 1] {
     //.-':_,^=;><+!rc*/z?sLTv)J7(|Fi{C}fI31tlu[neoZ5Yxjya]2ESwqkP6h9d4VpOGbUAKXHm8RD#$Bg0MNWQ%&@
     // 90 chars
