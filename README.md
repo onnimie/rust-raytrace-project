@@ -1,3 +1,6 @@
+![example showcase](assets/readme.gif)
+
+
 * luo abstraktit vektori- ja matriisikirjastot
 * luo objekti ja siihen liittyvät tyyppimääritteet
 * luo skene ja siihen liittyvät tyyppimääritteet
