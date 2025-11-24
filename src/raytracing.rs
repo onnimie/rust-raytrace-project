@@ -19,7 +19,7 @@ impl Ray {
     }
 
 
-    pub fn trace(&self, scene: &Scene) -> Option<Vector3<f64>> {
+    pub fn trace(&self, scene: &Scene, only_check_for_hit: bool) -> Option<Vector3<f64>> {
 
         // find objects from the scene reference
         // compute objects' intersections with the given ray
@@ -49,7 +49,13 @@ impl Ray {
             //dbg!(&ret);
         //}
         match rayhit {
-            Some(hit) => Some(phong::compute_phong_illumination(&hit, &self, scene)),
+            Some(hit) => {
+                if only_check_for_hit {
+                    Some(Vector3::unit_x())
+                } else {
+                    Some(phong::compute_phong_illumination(&hit, &self, scene))
+                }
+            },
             None => None
         }
     }

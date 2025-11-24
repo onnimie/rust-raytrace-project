@@ -94,16 +94,24 @@ pub fn compute_phong_illumination(rayhit: &RayHit, ray: &Ray, scene: &Scene) -> 
     }
 
     for (dir_to_light, intensity) in light_sources_dir_intensity {
-        let ldotn = dir_to_light.dot(&n);
-        if ldotn > 0.0 {
-            let first: Vector3<f64> = kd.scaled(ldotn).componentwise_prod(&intensity);
-            let r: Vector3<f64> = n.scaled(2_f64 * dir_to_light.dot(&n)).subtracted(&dir_to_light);
-            illumination.add(&first);
 
-            let rdotv = r.dot(&v);
-            if rdotv > 0.0 {
-                let second: Vector3<f64> = ks.scaled(rdotv.powf(alpha)).componentwise_prod(&intensity);
-                illumination.add(&second);
+        //check if in shadow (cast ray towards light, and check if intersected by another object)
+        let shadow_ray: Ray = Ray::new(rayhit.pos.added(&n.scaled(0.001)), dir_to_light, 0.001);
+        let shadow_hit: Option<Vector3<f64>> = shadow_ray.trace(scene, true);
+
+        if shadow_hit == None {
+
+            let ldotn = dir_to_light.dot(&n);
+            if ldotn > 0.0 {
+                let first: Vector3<f64> = kd.scaled(ldotn).componentwise_prod(&intensity);
+                let r: Vector3<f64> = n.scaled(2_f64 * dir_to_light.dot(&n)).subtracted(&dir_to_light);
+                illumination.add(&first);
+
+                let rdotv = r.dot(&v);
+                if rdotv > 0.0 {
+                    let second: Vector3<f64> = ks.scaled(rdotv.powf(alpha)).componentwise_prod(&intensity);
+                    illumination.add(&second);
+                }
             }
         }
     }

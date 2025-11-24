@@ -73,7 +73,7 @@ impl TerminalScreen {
                     let normalized_screen_coord: (f64, f64) = map_terminal_pos_to_normalized_screen_coord((i,j), self.w, self.h);
 
                     let ray: raytracing::Ray = camera.create_ray_for_screenpos(normalized_screen_coord, true_aspect_ratio);
-                    let color_hit: Option<Vector3<f64>> = ray.trace(scene);
+                    let color_hit: Option<Vector3<f64>> = ray.trace(scene, false);
 
                     match color_hit {
                         Some(color) => {
