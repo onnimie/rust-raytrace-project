@@ -9,6 +9,7 @@ use raytrace::camera::Camera;
 use raytrace::math::vector::Vector3;
 use raytrace::scene::Scene;
 use raytrace::terminal::TerminalScreen;
+use raytrace::input;
 
 fn main() {
 
@@ -44,7 +45,7 @@ fn main() {
 
     terminal_screen.init_screen_area().unwrap();
     println!("\n");
-    let (tx, rx): (Sender<bool>, Receiver<u8>) = test();
+    let (tx, rx): (Sender<bool>, Receiver<u8>) = input::init_input_thread_channels();
 
     let mut param_t: f64 = 0.0;
     
@@ -52,12 +53,8 @@ fn main() {
         tx.send(false).unwrap();
 
         match rx.try_recv() {
-            Ok(byte) => match byte {
-                119 => camera.move_by(&Vector3::new(50.0, 0.0, 0.0)),
-                97 => camera.move_by(&Vector3::new(0.0, -50.0, 0.0)),
-                115 => camera.move_by(&Vector3::new(-50.0, 0.0, 0.0)),
-                100 => camera.move_by(&Vector3::new(0.0, 50.0, 0.0)),
-                _ => (),
+            Ok(byte) => {
+                input::handle_input(byte, &mut scene, &mut camera);
             },
             Err(_) => (),
         }
@@ -77,30 +74,4 @@ fn main() {
         thread::sleep(Duration::from_millis(20));
     }
     
-}
-
-fn test() -> (Sender<bool>, Receiver<u8>) {
-    let (tx1, rx1) = std::sync::mpsc::channel();
-    let (tx2, rx2) = std::sync::mpsc::channel();
-    thread::spawn(move || {
-        let mut stdin: Stdin = io::stdin();
-        loop {
-            match rx2.try_recv() {
-                Ok(allow_read) => if allow_read {
-                    let mut buf: [u8; 1] = [0];
-                    stdin.read_exact(&mut buf).unwrap();
-                    tx1.send(buf[0]).unwrap();
-                },
-                Err(_) => (),
-            }
-            
-        }
-    });
-    (tx2, rx1)
-    /*
-    let mut buf: [u8; 4] = [0,0,0,0];
-    let mut stdin: Stdin = io::stdin();
-    stdin.read_exact(&mut buf).unwrap();
-
-    dbg!(buf);*/
 }
