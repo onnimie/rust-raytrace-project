@@ -38,7 +38,7 @@ impl TerminalScreen {
 
         self.output.write_all(wbuf)?;
         self.output.write_all(b"\n")?;
-        for _i in 0..self.h {
+        for _i in 0..self.h-2 {
             self.output.write_all(hbuf)?;
             self.output.write_all(b"\n")?;
         }
@@ -53,9 +53,9 @@ impl TerminalScreen {
         scene: &Scene,
         camera: &Camera) -> Result<()> {
 
-            self.output.write_all(b"\x1B[?25l\x1B[2;2H")?;
+            self.output.write_all(b"\x1B[?25l\x1B[0;0H")?;
 
-            let width_height_aspect_ratio: f64 = (self.w as f64)/(self.h as f64);
+            let width_height_aspect_ratio: f64 = ((self.w-2) as f64)/((self.h-2) as f64);
             let true_aspect_ratio: f64 = width_height_aspect_ratio * self.line_to_monospace_aspect_ratio;
 
             // go through all rows (h rows)
@@ -69,22 +69,36 @@ impl TerminalScreen {
 
             for j in 0..self.h {
                 let mut row_buf: Vec<u8> = Vec::new();
-                for i in 0..(self.w-2) {
-                    let normalized_screen_coord: (f64, f64) = map_terminal_pos_to_normalized_screen_coord((i,j), self.w, self.h);
 
-                    let ray: raytracing::Ray = camera.create_ray_for_screenpos(normalized_screen_coord, true_aspect_ratio);
-                    let color_hit: Option<Vector3<f64>> = ray.trace(scene, false);
+                if j == 0 || j == self.h-1 {
+                    let wst: String = "=".repeat(self.w as usize);
+                    let wbuf: &[u8] = wst.as_bytes();
+                    row_buf.write_all(wbuf)?;
+                } else {
 
-                    match color_hit {
-                        Some(color) => {
-                            let buf = map_color_to_terminal_character(color);
-                            row_buf.write_all(&buf)?
-                        },
-                        None => row_buf.write_all(b" ")?, //background color
-                    };
+                    for i in 0..self.w {
+
+                        if i == 0 || i == self.w-1 {
+                            row_buf.write_all(b"|")?;
+                        } else {
+
+                            let normalized_screen_coord: (f64, f64) = map_terminal_pos_to_normalized_screen_coord((i,j), self.w-2, self.h-2);
+
+                            let ray: raytracing::Ray = camera.create_ray_for_screenpos(normalized_screen_coord, true_aspect_ratio);
+                            let color_hit: Option<Vector3<f64>> = ray.trace(scene, false);
+
+                            match color_hit {
+                                Some(color) => {
+                                    let buf = map_color_to_terminal_character(color);
+                                    row_buf.write_all(&buf)?
+                                },
+                                None => row_buf.write_all(b" ")?, //background color
+                            };
+                        }
+                    }
                 }
                 self.output.write_all(&row_buf)?;
-                self.output.write_all(b"\x1B[1E\x1B[1C")?;
+                self.output.write_all(b"\x1B[1E")?;
             }
             self.output.write_all(format!("\x1B[{};0H\x1B[?25h", self.h+2).as_bytes())?;
             self.output.flush()
