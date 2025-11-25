@@ -1,5 +1,6 @@
-use std::io::{self};//, Stdout};
+use std::io::{self, Stdin, Read};//, Stdout};
 use std::f64::consts::PI;
+use std::sync::mpsc::{Sender, Receiver};
 use std::thread;
 use std::time::Duration;
 use std::env;
@@ -43,21 +44,63 @@ fn main() {
 
     terminal_screen.init_screen_area().unwrap();
     println!("\n");
+    let (tx, rx): (Sender<bool>, Receiver<u8>) = test();
 
     let mut param_t: f64 = 0.0;
-
+    
     loop {
+        tx.send(false).unwrap();
+
+        match rx.try_recv() {
+            Ok(byte) => match byte {
+                119 => camera.move_by(&Vector3::new(50.0, 0.0, 0.0)),
+                97 => camera.move_by(&Vector3::new(0.0, -50.0, 0.0)),
+                115 => camera.move_by(&Vector3::new(-50.0, 0.0, 0.0)),
+                100 => camera.move_by(&Vector3::new(0.0, 50.0, 0.0)),
+                _ => (),
+            },
+            Err(_) => (),
+        }
+
         terminal_screen.render_scene_to_screen_area(&scene, &camera).unwrap();
+        tx.send(true).unwrap();
+        
         scene.point_lights[0].move_by(&Vector3::new(0.0, 10.0, 0.0));
         scene.point_lights[0].move_to_pos(Vector3::new(
             300.0 * param_t.cos(),
             300.0 * param_t.sin(),
             100.0 * (param_t/2_f64).sin(),
         ));
-        camera.move_by(&Vector3::new(-0.8, 0.0, 0.0));
+        //camera.move_by(&Vector3::new(-0.8, 0.0, 0.0));
         println!("camera pos: {:?}", camera.eyepoint);
         param_t += 0.03;
         thread::sleep(Duration::from_millis(20));
     }
     
+}
+
+fn test() -> (Sender<bool>, Receiver<u8>) {
+    let (tx1, rx1) = std::sync::mpsc::channel();
+    let (tx2, rx2) = std::sync::mpsc::channel();
+    thread::spawn(move || {
+        let mut stdin: Stdin = io::stdin();
+        loop {
+            match rx2.try_recv() {
+                Ok(allow_read) => if allow_read {
+                    let mut buf: [u8; 1] = [0];
+                    stdin.read_exact(&mut buf).unwrap();
+                    tx1.send(buf[0]).unwrap();
+                },
+                Err(_) => (),
+            }
+            
+        }
+    });
+    (tx2, rx1)
+    /*
+    let mut buf: [u8; 4] = [0,0,0,0];
+    let mut stdin: Stdin = io::stdin();
+    stdin.read_exact(&mut buf).unwrap();
+
+    dbg!(buf);*/
 }
