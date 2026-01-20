@@ -6,3 +6,4 @@ pub mod raytracing;
 pub mod camera;
 pub mod phong;
 pub mod input;
+pub mod fileparser;

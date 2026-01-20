@@ -5,6 +5,12 @@ use crate::math::matrix::Matrix4x4;
 use crate::phong::Material;
 use crate::raytracing::{Ray, RayHit};
 
+
+pub trait ObjectWithIntersect {
+    fn intersect(&self, ray: &Ray) -> Option<RayHit>;
+}
+
+
 #[derive(Debug, PartialEq)]
 pub enum Shape {
     Ball,
@@ -12,7 +18,7 @@ pub enum Shape {
 }
 
 #[derive(Debug)]
-pub struct Object {
+pub struct PrimalObject {
     _name: String,
     shape: Shape,
     size: f64,
@@ -25,9 +31,9 @@ pub struct Object {
     _mass: f64,
 }
 
-impl Object {
-    pub fn test_ball(size: f64, pos: Vector3<f64>) -> Object {
-        Object {
+impl PrimalObject {
+    pub fn test_ball(size: f64, pos: Vector3<f64>) -> PrimalObject {
+        PrimalObject {
             _name: String::from("testipallo"),
             shape: Shape::Ball,
             size,
@@ -41,8 +47,17 @@ impl Object {
         }
     }
 
+    pub fn move_to_pos(&mut self, new_pos: Vector3<f64>) {
+        self.pos = new_pos;
+    }
 
-    pub fn intersect(&self, ray: &Ray) -> Option<RayHit> {
+    pub fn move_by(&mut self, deltas: &Vector3<f64>) {
+        self.pos.add(&deltas);
+    }
+}
+
+impl ObjectWithIntersect for PrimalObject {
+    fn intersect(&self, ray: &Ray) -> Option<RayHit> {
 
         if self.shape == Shape::Ball {
             // (x-x0)^2 + (y-y0)^2 + (z-z0)^2 = R^2
@@ -105,24 +120,24 @@ impl Object {
 
         None
     }
-
-    pub fn move_to_pos(&mut self, new_pos: Vector3<f64>) {
-        self.pos = new_pos;
-    }
-
-    pub fn move_by(&mut self, deltas: &Vector3<f64>) {
-        self.pos.add(&deltas);
-    }
 }
 
 
 #[derive(Debug)]
 pub struct Triangle {
-    vertices: [Vector3<f64>; 3],
+    pub vertices: [Vector3<f64>; 3],
 }
 
 impl Triangle {
-    pub fn intersect(&self, ray: &Ray) -> Option<RayHit> {
+    pub fn new(v1: Vector3<f64>, v2: Vector3<f64>, v3: Vector3<f64>) -> Self {
+        Self {
+            vertices: [v1, v2, v3],
+        }
+    }
+}
+
+impl ObjectWithIntersect for Triangle {
+    fn intersect(&self, ray: &Ray) -> Option<RayHit> {
         // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
 
         let a: Vector3<f64> = self.vertices[0];
@@ -132,7 +147,7 @@ impl Triangle {
         let e1: Vector3<f64> = b.subtracted(&a);
         let e2: Vector3<f64> = c.subtracted(&a);
 
-        let triangle_plane_normal: Vector3<f64> = e1.cross(&e2);
+        let triangle_plane_normal: Vector3<f64> = e1.cross(&e2).normalized();
 
         let d: f64 = triangle_plane_normal.dot(&ray.dir);
         if d < f64::EPSILON && d > -f64::EPSILON {
@@ -154,7 +169,7 @@ impl Triangle {
         let u: f64 = inv_row2.dot(&s);
         let v: f64 = inv_row3.dot(&s);
 
-        if u < 0.0 || u > 1.0 || v < 0.0 || v > 1.0 {
+        if u < 0.0 || v < 0.0 || u+v > 1.0 {
             return None;
         }
         let t: f64 = inv_row1.dot(&s);
@@ -164,5 +179,31 @@ impl Triangle {
         }
 
         None
+    }
+}
+
+
+#[derive(Debug)]
+pub struct TriangleMesh {
+    pub triangles: Vec<Triangle>,
+}
+
+impl ObjectWithIntersect for TriangleMesh {
+    fn intersect(&self, ray: &Ray) -> Option<RayHit> {
+        let mut rayhit: Option<RayHit> = None;
+        
+        for triangle in &self.triangles {
+            //let newhit: Option<RayHit> = ;
+            match triangle.intersect(ray) {
+                Some(new_hit) => match &rayhit {
+                    Some(old_hit) => if new_hit.t < old_hit.t {
+                        rayhit = Some(new_hit);
+                    },
+                    None => rayhit = Some(new_hit)
+                },
+                None => ()
+            };
+        }
+        rayhit
     }
 }
