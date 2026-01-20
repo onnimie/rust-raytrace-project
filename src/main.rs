@@ -1,4 +1,4 @@
-use std::io::{self, Stdin, Read};//, Stdout};
+use std::io::{self}; //Stdin, Read};//, Stdout};
 use std::f64::consts::PI;
 use std::sync::mpsc::{Sender, Receiver};
 use std::thread;

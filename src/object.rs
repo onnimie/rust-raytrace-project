@@ -1,3 +1,5 @@
+use std::f64;
+
 use crate::math::vector::Vector3;
 use crate::math::matrix::Matrix4x4;
 use crate::phong::Material;
@@ -110,5 +112,57 @@ impl Object {
 
     pub fn move_by(&mut self, deltas: &Vector3<f64>) {
         self.pos.add(&deltas);
+    }
+}
+
+
+#[derive(Debug)]
+pub struct Triangle {
+    vertices: [Vector3<f64>; 3],
+}
+
+impl Triangle {
+    pub fn intersect(&self, ray: &Ray) -> Option<RayHit> {
+        // https://en.wikipedia.org/wiki/M%C3%B6ller%E2%80%93Trumbore_intersection_algorithm
+
+        let a: Vector3<f64> = self.vertices[0];
+        let b: Vector3<f64> = self.vertices[1];
+        let c: Vector3<f64> = self.vertices[2];
+
+        let e1: Vector3<f64> = b.subtracted(&a);
+        let e2: Vector3<f64> = c.subtracted(&a);
+
+        let triangle_plane_normal: Vector3<f64> = e1.cross(&e2);
+
+        let d: f64 = triangle_plane_normal.dot(&ray.dir);
+        if d < f64::EPSILON && d > -f64::EPSILON {
+            return None;
+        }
+
+        let s: Vector3<f64> = ray.origin.subtracted(&a);
+
+        // find inverse of the matrix A = cols[-ray.dir, e1, e2] to solve A*[t u v] = s (solve for t, u and v)
+        // inv(A) = 1/det(A) * rows[e1 cross e2, e2 cross -ray.dir, -ray.dir cross e1]
+
+        let det: f64 = ray.dir.cross(&e2).dot(&e1);
+        let inv_det: f64 = 1.0/det;
+
+        let inv_row1: Vector3<f64> = e1.cross(&e2).scaled(inv_det);
+        let inv_row2: Vector3<f64> = e2.cross(&(ray.dir.scaled(-1.0))).scaled(inv_det);
+        let inv_row3: Vector3<f64> = (ray.dir.scaled(-1.0)).cross(&e1).scaled(inv_det);
+
+        let u: f64 = inv_row2.dot(&s);
+        let v: f64 = inv_row3.dot(&s);
+
+        if u < 0.0 || u > 1.0 || v < 0.0 || v > 1.0 {
+            return None;
+        }
+        let t: f64 = inv_row1.dot(&s);
+        if t > ray.tmin {
+            let pos: Vector3<f64> = ray.origin.added(&ray.dir.scaled(t));
+            return Some(RayHit::new(t, pos, triangle_plane_normal, Material::test_material()));
+        }
+
+        None
     }
 }
