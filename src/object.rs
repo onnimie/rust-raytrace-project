@@ -126,12 +126,14 @@ impl ObjectWithIntersect for PrimalObject {
 #[derive(Debug)]
 pub struct Triangle {
     pub vertices: [Vector3<f64>; 3],
+    pub normal: Vector3<f64>,
 }
 
 impl Triangle {
-    pub fn new(v1: Vector3<f64>, v2: Vector3<f64>, v3: Vector3<f64>) -> Self {
+    pub fn new(v1: Vector3<f64>, v2: Vector3<f64>, v3: Vector3<f64>, normal: Vector3<f64>) -> Self {
         Self {
             vertices: [v1, v2, v3],
+            normal,
         }
     }
 }
@@ -147,7 +149,7 @@ impl ObjectWithIntersect for Triangle {
         let e1: Vector3<f64> = b.subtracted(&a);
         let e2: Vector3<f64> = c.subtracted(&a);
 
-        let triangle_plane_normal: Vector3<f64> = e1.cross(&e2).normalized();
+        let triangle_plane_normal: Vector3<f64> = self.normal;//e1.cross(&e2).normalized();
 
         let d: f64 = triangle_plane_normal.dot(&ray.dir);
         if d < f64::EPSILON && d > -f64::EPSILON {

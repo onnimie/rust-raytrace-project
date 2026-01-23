@@ -32,6 +32,7 @@ impl Scene {
             vertices: [Vector3::new(-80.0, 30.0, -50.0),//
                     Vector3::new(-50.0, -60.0, 80.0),
                     Vector3::new(-110.0, -100.0, -50.0)],
+            normal: Vector3::unit_z(),
             };
 
         let test_directional_light: DirectionalLight =
