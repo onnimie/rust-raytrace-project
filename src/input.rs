@@ -34,11 +34,12 @@ pub fn init_input_thread_channels() -> (Sender<bool>, Receiver<u8>) {
 }
 
 pub fn handle_input(input_byte: u8, _scene: &mut Scene, camera: &mut Camera) {
+    let mov: f64 = 20.0;
     match input_byte {
-        /* w */ 119 => camera.move_by(&Vector3::new(50.0, 0.0, 0.0)),
-        /* a */ 97 => camera.move_by(&Vector3::new(0.0, -50.0, 0.0)),
-        /* s */ 115 => camera.move_by(&Vector3::new(-50.0, 0.0, 0.0)),
-        /* d */ 100 => camera.move_by(&Vector3::new(0.0, 50.0, 0.0)),
+        /* w */ 119 => camera.move_by(&Vector3::new(mov, 0.0, 0.0)),
+        /* a */ 97 => camera.move_by(&Vector3::new(0.0, -mov, 0.0)),
+        /* s */ 115 => camera.move_by(&Vector3::new(-mov, 0.0, 0.0)),
+        /* d */ 100 => camera.move_by(&Vector3::new(0.0, mov, 0.0)),
         _ => (),
     }
 }

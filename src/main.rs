@@ -27,10 +27,10 @@ fn main() {
     }
 
     let mut camera: Camera = 
-        Camera::new(Vector3::new(-220.0, 0.0, 0.0),
-            Vector3::unit_x(),
+        Camera::new(Vector3::new(-40.0, 30.0, 50.0),
+            Vector3::new(1.0, 0.0, -1.0).normalized(),
             Vector3::unit_y(),
-            Vector3::unit_z(),
+            Vector3::new(1.0, 0.0, 1.0).normalized(),
             0.001,
             PI/4.0);
     

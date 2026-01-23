@@ -26,7 +26,7 @@ impl Scene {
         let test_ball1: PrimalObject = PrimalObject::test_ball(100.0, Vector3::new(0.0, 0.0, 0.0));
         let test_ball2: PrimalObject = PrimalObject::test_ball(30.0, Vector3::new(-110.0, 40.0, 0.0));
 
-        let test_triangle_mesh: TriangleMesh = TriangleMesh { triangles: read_triangles_from_obj("./assets/al.obj") };
+        let test_triangle_mesh: TriangleMesh = TriangleMesh { triangles: read_triangles_from_obj("./assets/cube.obj") };
 
         let test_triangle: Triangle = Triangle {
             vertices: [Vector3::new(-80.0, 30.0, -50.0),//
